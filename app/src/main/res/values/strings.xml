@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">OrdersApp</string>
+
+<!--tvText-->
+    <string name="tv_product_id">product ID:</string>
+    <string name="tv_name">name:</string>
+    <string name="tv_cost">cost:</string>
+    <string name="tv_quantity">quantity:</string>
+
+
+<!--button-->
+    <string name="button_add_product">add product to order</string>
 </resources>
