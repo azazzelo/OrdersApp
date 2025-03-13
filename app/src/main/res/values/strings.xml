@@ -6,8 +6,13 @@
     <string name="tv_name">name:</string>
     <string name="tv_cost">cost:</string>
     <string name="tv_quantity">quantity:</string>
-
+    <string name="tv_logo">OrdersApp</string>
 
 <!--button-->
     <string name="button_add_product">add product to order</string>
+    <string name="button_log_in">log in</string>
+
+<!--hint-->
+    <string name="hint_login">login</string>
+    <string name="hint_password">password</string>
 </resources>
