@@ -1,5 +1,42 @@
 package com.example.ordersapp.db
 
-data class AppDatabase(
-    var version: Int
-)
+import android.content.Context
+import androidx.room.Room
+import androidx.room.Database
+import androidx.room.RoomDatabase
+
+@Database(
+    entities = [
+    CustomersEntity::class,
+    OrdersEntity::class,
+    OrdersProductsEntity::class,
+    ProductsEntity::class,
+    RolesEntity::class,
+    UsersEntity::class
+    ],
+    version = 1)
+abstract class AppDatabase(): RoomDatabase() {
+    abstract fun customersDao(): CustomersDao
+    abstract fun ordersDao(): OrdersDao
+    abstract fun ordersProductsDao(): OrdersProductsDao
+    abstract fun productsDao(): ProductsDao
+    abstract fun rolesDao(): RolesDao
+    abstract fun usersDao(): UsersDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getDatabase(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "app_database"
+                ).build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+}
