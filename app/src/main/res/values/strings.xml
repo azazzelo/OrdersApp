@@ -1,18 +1,41 @@
 <resources>
     <string name="app_name">OrdersApp</string>
 
-<!--tvText-->
+    <!--tvText-->
     <string name="tv_product_id">product ID:</string>
     <string name="tv_name">name:</string>
     <string name="tv_cost">cost:</string>
     <string name="tv_quantity">quantity:</string>
     <string name="tv_logo">OrdersApp</string>
+    <string name="tv_user_id">user ID:</string>
+    <string name="tv_user_role_id">role ID:</string>
+    <string name="tv_user_login">login:</string>
+    <string name="tv_user_password">password:</string>
+    <string name="tv_create_edit">Create/Edit</string>
 
-<!--button-->
-    <string name="button_add_product">add product to order</string>
-    <string name="button_log_in">log in</string>
+    <!--button-->
+    <string name="btn_log_in">log in</string>
+    <string name="btn_table_roles">Roles</string>
+    <string name="btn_table_users">Users</string>
+    <string name="btn_table_customers">Customers</string>
+    <string name="btn_table_Orders">Orders</string>
+    <string name="btn_table_orders_products">Orders-Products</string>
+    <string name="btn_table_products">Products</string>
+    <string name="btn_add_product">add product</string>
+    <string name="btn_save">save</string>
 
-<!--hint-->
+    <!--hint-->
+    <string name="hint_product_id">product ID</string>
+    <string name="hint_customer">customer</string>
     <string name="hint_login">login</string>
     <string name="hint_password">password</string>
+    <string name="hint_name">name</string>
+    <string name="hint_phone">phone</string>
+    <string name="hint_email">email</string>
+    <string name="hint_customer_id">customer ID</string>
+    <string name="hint_registration_date">registration date</string>
+    <string name="hint_delivery_date">delivery date</string>
+    <string name="hint_finally_cost">finally cost</string>
+    <string name="hint_quantity">quantity</string>
+    <string name="hint_cost">cost</string>
 </resources>

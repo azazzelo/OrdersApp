@@ -13,6 +13,42 @@
         android:theme="@style/Theme.OrdersApp"
         tools:targetApi="31">
         <activity
+            android:name=".AddProductInOrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OrdersRedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OrdersEntityActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CustomersRedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CustomersEntityActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProductsRedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProductsEntityActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RolesRedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RolesEntityActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UsersRedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TablesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UsersEntityActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

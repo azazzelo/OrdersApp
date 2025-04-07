@@ -12,6 +12,7 @@ constraintlayout = "2.1.4"
 room = "2.6.1"
 compilerKsp = "1.9.22-1.0.17"  # Версия KSP должна соответствовать версии Kotlin
 lifecycle = "2.7.0"
+viewModel = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -25,6 +26,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-room = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "viewModel"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
