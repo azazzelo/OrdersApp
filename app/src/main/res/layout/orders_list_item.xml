@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="130dp"
     android:layout_margin="4dp"
-    app:cardBackgroundColor="@color/yellow"
+    app:cardBackgroundColor="@color/red"
     app:cardCornerRadius="20dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,13 +42,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
-                    android:text="@string/tv_product_id" />
+                    android:text="@string/tv_product_id"
+                    android:textColor="@color/white" />
 
                 <TextView
                     android:id="@+id/tvProductId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView"
+                    android:textColor="@color/white"
                     android:visibility="invisible" />
             </LinearLayout>
 
@@ -63,13 +65,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
-                    android:text="@string/tv_name" />
+                    android:text="@string/tv_name"
+                    android:textColor="@color/white" />
 
                 <TextView
                     android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView"
+                    android:textColor="@color/white"
                     android:visibility="invisible" />
             </LinearLayout>
 
@@ -84,13 +88,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
-                    android:text="@string/tv_cost" />
+                    android:text="@string/tv_cost"
+                    android:textColor="@color/white" />
 
                 <TextView
                     android:id="@+id/tvCost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView"
+                    android:textColor="@color/white"
                     android:visibility="invisible" />
             </LinearLayout>
 
@@ -105,13 +111,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
-                    android:text="@string/tv_quantity" />
+                    android:text="@string/tv_quantity"
+                    android:textColor="@color/white" />
 
                 <TextView
                     android:id="@+id/tvQuantityValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView"
+                    android:textColor="@color/white"
                     android:visibility="invisible" />
             </LinearLayout>
         </LinearLayout>

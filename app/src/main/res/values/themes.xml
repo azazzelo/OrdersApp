@@ -4,7 +4,7 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:fontFamily">@font/boston_regular</item>
-        <item  name="colorPrimary">@color/blue</item>
+        <item  name="colorPrimary">@color/red</item>
 
     </style>
 

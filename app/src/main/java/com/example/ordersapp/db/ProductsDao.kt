@@ -7,12 +7,5 @@ import androidx.room.Query
 @Dao
 interface ProductsDao {
 
-    @Insert
-    fun insert(product: ProductsEntity)
 
-    @Query("DELETE FROM Products WHERE idProduct = :idProduct")
-    fun delete(idProduct: Int)
-
-    @Query("SELECT * FROM Products WHERE name = :name")
-    fun select(name: String)
 }
