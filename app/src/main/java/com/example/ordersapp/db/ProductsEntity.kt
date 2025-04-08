@@ -13,5 +13,7 @@ data class ProductsEntity(
     @ColumnInfo(name = "cost")
     var cost: Double,
     @ColumnInfo(name = "quantity")
-    var quantity: Int
+    var quantity: Int,
+    @ColumnInfo(name = "photo_uri")
+    var photoUri: String? = null
 )

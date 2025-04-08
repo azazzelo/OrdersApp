@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.glide)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.room)
     implementation(libs.androidx.core.ktx)
