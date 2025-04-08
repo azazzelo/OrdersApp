@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -7,14 +8,15 @@
     android:layout_height="match_parent"
     tools:context=".UsersRedActivity">
 
+    <!-- Твой FAB для сохранения -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/btnSaveUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
-        android:contentDescription="btn"
+        android:contentDescription="Save User"
         android:tint="@color/white"
         android:tintMode="src_in"
         app:backgroundTint="@color/red"
@@ -22,8 +24,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_save" />
 
+    <!-- Твой LinearLayout с полями ввода -->
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/linearLayoutInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
@@ -34,6 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Твое поле для ID Роли (Мы его игнорируем в коде, используем Spinner) -->
         <EditText
             android:id="@+id/edTextUsersRoleId"
             android:layout_width="wrap_content"
@@ -41,10 +45,12 @@
             android:layout_marginBottom="5dp"
             android:ems="10"
             android:hint="@string/tv_user_role_id"
-            android:inputType="text" />
+            android:inputType="number"
+            android:visibility="gone"/> <!-- Скрываем, так как будем использовать Spinner -->
 
+        <!-- Твое поле для Логина -->
         <EditText
-            android:id="@+id/edTextUsersLogin"
+            android:id="@+id/edTextUserLogin"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginBottom="5dp"
@@ -52,18 +58,37 @@
             android:hint="@string/hint_login"
             android:inputType="text" />
 
+        <!-- Твое поле для Пароля -->
         <EditText
-            android:id="@+id/edTextUsersPassword"
+            android:id="@+id/edTextUserPassword"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:ems="10"
             android:hint="@string/hint_password"
-            android:inputType="text" />
+            android:inputType="textPassword" />
+
+        <!-- === ДОБАВЛЕНО: Spinner для выбора роли === -->
+        <TextView
+            android:id="@+id/tvRoleLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Select Role:"
+            android:labelFor="@id/spinnerUserRole"/>
+
+        <Spinner
+            android:id="@+id/spinnerUserRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:minHeight="48dp"/>
+        <!-- ========================================== -->
 
     </LinearLayout>
 
+    <!-- Твой заголовок -->
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textViewUserTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
@@ -71,7 +96,8 @@
         android:text="@string/tv_create_edit"
         android:textColor="@color/red"
         android:textSize="48sp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout3" />
+        app:layout_constraintBottom_toTopOf="@+id/linearLayoutInput"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayoutInput"
+        app:layout_constraintStart_toStartOf="@+id/linearLayoutInput" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

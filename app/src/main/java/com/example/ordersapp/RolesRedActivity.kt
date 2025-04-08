@@ -1,16 +1,22 @@
 package com.example.ordersapp
 
+import android.app.Activity
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.ordersapp.databinding.ActivityProductsRedBinding
-import com.example.ordersapp.databinding.ActivityRolesRedBinding
+import androidx.lifecycle.lifecycleScope
+import com.example.ordersapp.databinding.ActivityRolesRedBinding // Проверьте путь
+import com.example.ordersapp.db.AppDatabase
+import com.example.ordersapp.db.RolesDao
+import com.example.ordersapp.db.RolesEntity
+import kotlinx.coroutines.launch
 
 class RolesRedActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRolesRedBinding
+    private lateinit var rolesDao: RolesDao
+    private var currentRole: RolesEntity? = null // Для хранения данных при редактировании
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

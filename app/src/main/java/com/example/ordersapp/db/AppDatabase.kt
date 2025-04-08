@@ -14,7 +14,7 @@ import androidx.room.RoomDatabase
     RolesEntity::class,
     UsersEntity::class
     ],
-    version = 1)
+    version = 2)
 abstract class AppDatabase(): RoomDatabase() {
     abstract fun customersDao(): CustomersDao
     abstract fun ordersDao(): OrdersDao
@@ -33,7 +33,7 @@ abstract class AppDatabase(): RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "app_database"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 instance
             }

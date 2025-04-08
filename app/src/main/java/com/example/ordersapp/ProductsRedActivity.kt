@@ -1,5 +1,6 @@
 package com.example.ordersapp
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,52 +10,93 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide // Импортируем Glide
+import com.bumptech.glide.Glide
 import com.example.ordersapp.databinding.ActivityProductsRedBinding
 import com.example.ordersapp.db.AppDatabase
 import com.example.ordersapp.db.ProductsDao
 import com.example.ordersapp.db.ProductsEntity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File // Импорт для File
+
+
+
+
+
 
 class ProductsRedActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProductsRedBinding
     private lateinit var productsDao: ProductsDao
     private var currentProduct: ProductsEntity? = null
-    private var selectedImageUri: Uri? = null // Этот URI будет использоваться для СОХРАНЕНИЯ
+    // URI, который будет СОХРАНЕН в БД (указывает на файл во внутреннем хранилище)
+    private var internalImageUri: Uri? = null
+    // URI, выбранный пользователем (временный, для отображения и копирования)
+    private var selectedContentUri: Uri? = null
+
 
     private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let {
-            Log.d("ProductsRedActivity", "Image selected: $it")
-            // Пытаемся получить постоянные права (может не сработать для всех URI)
-            try {
-                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                contentResolver.takePersistableUriPermission(it, takeFlags)
-                Log.i("ProductsRedActivity", "Persistable URI permission grant successful for: $it")
-                selectedImageUri = it // Сохраняем URI для последующего сохранения в БД
+        uri?.let { contentUri ->
+            Log.d("ProductsRedActivity", "Image selected: $contentUri")
+            selectedContentUri = contentUri // Сохраняем выбранный URI
 
-                // Используем Glide для отображения выбранного изображения
-                Glide.with(this)
-                    .load(it)
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .error(R.drawable.ic_launcher_foreground)
-                    .into(binding.imageView)
-                binding.imageView.visibility = View.VISIBLE
+            // Отображаем выбранное изображение немедленно
+            Glide.with(this)
+                .load(contentUri)
+                .placeholder(R.drawable.ic_launcher_background) // Замените
+                .error(R.drawable.ic_launcher_foreground)     // Замените
+                .into(binding.imageView)
+            binding.imageView.visibility = View.VISIBLE
 
-            } catch (e: SecurityException) {
-                Log.e("ProductsRedActivity", "Failed to take persistable URI permission for: $it", e)
-                // Если не удалось получить права, URI может быть временным.
-                // Отобразить все равно можно, но сохранить надежно не получится.
-                // Лучше копировать файл в таком случае, но пока просто покажем Toast.
-                selectedImageUri = it // Сохраняем URI, но он может быть временным
-                Glide.with(this).load(it).into(binding.imageView)
-                binding.imageView.visibility = View.VISIBLE
-                Toast.makeText(this, "Внимание: Доступ к фото может быть утерян", Toast.LENGTH_LONG).show()
-            } catch (e: Exception){
-                Log.e("ProductsRedActivity", "Error processing selected image URI: $it", e)
-                Toast.makeText(this, "Не удалось обработать выбранное фото", Toast.LENGTH_SHORT).show()
-            }
+            // Запускаем копирование в фоновом потоке
+            // Результат копирования (internalImageUri) будет использован при СОХРАНЕНИИ товара
+            copySelectedImageToInternalStorage(contentUri)
+
         } ?: run {
             Log.d("ProductsRedActivity", "Image selection cancelled")
+        }
+    }
+
+    // Новая функция для копирования в фоне
+    private fun copySelectedImageToInternalStorage(contentUri: Uri) {
+        lifecycleScope.launch {
+            // Показываем прогресс (опционально)
+            // binding.imageCopyProgressBar.visibility = View.VISIBLE
+            Log.d("ProductsRedActivity", "Starting copy process for $contentUri")
+            val copiedUri = withContext(Dispatchers.IO) { // Выполняем копирование в IO потоке
+                // Пытаемся получить постоянные права на всякий случай,
+                // хотя для копирования они могут и не понадобиться, если временный доступ еще есть
+                try {
+                    val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    contentResolver.takePersistableUriPermission(contentUri, takeFlags)
+                    Log.i("ProductsRedActivity", "Persistable read permission possibly granted for $contentUri")
+                } catch (e: SecurityException) {
+                    Log.w("ProductsRedActivity", "Failed to take persistable permission for $contentUri (SecurityException), proceeding with copy attempt.")
+                } catch (e: Exception) {
+                    Log.e("ProductsRedActivity", "Error trying to take persistable permission for $contentUri", e)
+                }
+
+                // Вызываем нашу функцию копирования
+                copyUriToInternalStorage(this@ProductsRedActivity, contentUri)
+            }
+            // Скрываем прогресс
+            // binding.imageCopyProgressBar.visibility = View.GONE
+
+            if (copiedUri != null) {
+                // Успешно скопировано! Сохраняем URI на ВНУТРЕННИЙ файл.
+                // Удаляем старый файл, если он был и мы сейчас обновляем продукт
+                cleanupOldInternalImage(internalImageUri?.toString()) // Удаляем предыдущий internal Uri, если был
+                internalImageUri = copiedUri // Сохраняем новый internal Uri
+                Log.i("ProductsRedActivity", "Image copied successfully to internal URI: $internalImageUri")
+            } else {
+                // Ошибка копирования
+                internalImageUri = null // Сбрасываем URI
+                selectedContentUri = null // Сбрасываем и выбранный, раз не скопировали
+                Toast.makeText(this@ProductsRedActivity, "Не удалось сохранить выбранное фото", Toast.LENGTH_LONG).show()
+                // Можно скрыть imageView или показать заглушку, если копирование не удалось
+                binding.imageView.visibility = View.GONE
+                Log.e("ProductsRedActivity", "Failed to copy image to internal storage.")
+            }
         }
     }
 
@@ -92,32 +134,43 @@ class ProductsRedActivity : AppCompatActivity() {
                     binding.edTextProductQuantity.setText(product.quantity.toString())
 
                     product.photoUri?.let { uriString ->
-                        Log.d("ProductsRedActivity", "Product has photoUri: $uriString")
+                        Log.d("ProductsRedActivity", "Product has photoUri (internal): $uriString")
                         try {
-                            // Не сохраняем этот URI в selectedImageUri, он только для отображения
+                            // Этот URI указывает на файл во ВНУТРЕННЕМ хранилище
                             val displayUri = Uri.parse(uriString)
-                            selectedImageUri = displayUri // Сохраняем URI для возможности перезаписи если фото не менялось
+                            // Проверяем существует ли файл перед загрузкой
+                            val fileExists = withContext(Dispatchers.IO) {
+                                try { File(displayUri.path!!).exists() } catch (e: Exception) { false }
+                            }
 
-                            Glide.with(this@ProductsRedActivity)
-                                .load(displayUri)
-                                .placeholder(R.drawable.ic_launcher_background) // Замените на свои placeholder'ы
-                                .error(R.drawable.ic_launcher_foreground) // Замените на свои error drawable
-                                .into(binding.imageView)
-                            binding.imageView.visibility = View.VISIBLE
-                            Log.i("ProductsRedActivity", "Successfully loaded image with Glide: $uriString")
+                            if(fileExists){
+                                internalImageUri = displayUri // Сохраняем текущий внутренний URI
+                                Glide.with(this@ProductsRedActivity)
+                                    .load(displayUri) // Glide умеет работать с file:// URI
+                                    .placeholder(R.drawable.ic_launcher_background) // Замените
+                                    .error(R.drawable.ic_launcher_foreground)     // Замените
+                                    .into(binding.imageView)
+                                binding.imageView.visibility = View.VISIBLE
+                                Log.i("ProductsRedActivity", "Successfully loaded internal image with Glide: $uriString")
+                            } else {
+                                Log.w("ProductsRedActivity", "Internal image file not found: $uriString. Clearing image.")
+                                binding.imageView.visibility = View.GONE
+                                internalImageUri = null // Сбрасываем, т.к. файл не найден
+                                // Опционально: можно удалить битую ссылку из БД
+                                // lifecycleScope.launch { productsDao.update(product.copy(photoUri = null)) }
+                            }
 
                         } catch (e: Exception) {
-                            Log.e("ProductsRedActivity", "Error parsing or loading image URI with Glide: $uriString", e)
+                            Log.e("ProductsRedActivity", "Error parsing or loading internal image URI: $uriString", e)
                             binding.imageView.visibility = View.GONE
-                            // Не показываем Toast здесь, так как Glide сам покажет error drawable
-                            // Toast.makeText(this@ProductsRedActivity, "Ошибка загрузки сохраненного изображения", Toast.LENGTH_SHORT).show()
+                            internalImageUri = null // Сбрасываем, если URI битый
                         }
                     } ?: run {
                         Log.d("ProductsRedActivity", "Product has no photoUri")
                         binding.imageView.visibility = View.GONE
+                        internalImageUri = null // У продукта нет фото
                     }
                 } ?: run {
-                    Log.w("ProductsRedActivity", "Product with ID $productId not found")
                     Toast.makeText(this@ProductsRedActivity, "Товар не найден", Toast.LENGTH_SHORT).show()
                     finish()
                 }
@@ -140,23 +193,35 @@ class ProductsRedActivity : AppCompatActivity() {
             return
         }
 
-        // Используем selectedImageUri, который был установлен либо при выборе нового фото,
-        // либо при загрузке существующих данных (если фото было)
-        val photoUriString = selectedImageUri?.toString()
-        Log.d("ProductsRedActivity", "Saving product with photoUri: $photoUriString")
+        // ВАЖНО: Сохраняем URI на ВНУТРЕННИЙ файл (internalImageUri)
+        val photoUriStringToSave = internalImageUri?.toString()
+        Log.d("ProductsRedActivity", "Saving product. Current internal photoUri: $photoUriStringToSave")
+
+        // --- Логика очистки старого файла ---
+        val oldUriStringFromDb = currentProduct?.photoUri // URI, который был в БД до редактирования
+        // Удаляем старый файл ТОЛЬКО если:
+        // 1. Это редактирование (currentProduct != null)
+        // 2. Старый URI существовал (oldUriStringFromDb != null)
+        // 3. Новый URI либо null, либо отличается от старого
+        if (currentProduct != null && oldUriStringFromDb != null && oldUriStringFromDb != photoUriStringToSave) {
+            Log.d("ProductsRedActivity", "Need to cleanup old image: $oldUriStringFromDb")
+            cleanupOldInternalImage(oldUriStringFromDb)
+        } else {
+            Log.d("ProductsRedActivity", "No need to cleanup old image. Old: $oldUriStringFromDb, New: $photoUriStringToSave")
+        }
 
 
         val productToSave = currentProduct?.copy(
             name = name,
             cost = cost,
             quantity = quantity,
-            photoUri = photoUriString // Сохраняем URI как строку
+            photoUri = photoUriStringToSave // Сохраняем URI внутреннего файла
         ) ?: ProductsEntity(
             idProduct = 0,
             name = name,
             cost = cost,
             quantity = quantity,
-            photoUri = photoUriString
+            photoUri = photoUriStringToSave
         )
 
         lifecycleScope.launch {
@@ -170,7 +235,7 @@ class ProductsRedActivity : AppCompatActivity() {
                     Log.i("ProductsRedActivity", "Product updated successfully.")
                     Toast.makeText(this@ProductsRedActivity, "Товар обновлен", Toast.LENGTH_SHORT).show()
                 }
-                setResult(RESULT_OK)
+                setResult(Activity.RESULT_OK)
                 finish()
             } catch (e: Exception) {
                 Log.e("ProductsRedActivity", "Error saving product to DB", e)
@@ -178,4 +243,32 @@ class ProductsRedActivity : AppCompatActivity() {
             }
         }
     }
-}
+
+    // Функция для удаления файла изображения из внутреннего хранилища
+    private fun cleanupOldInternalImage(oldUriString: String?) {
+        if (oldUriString == null) return
+        lifecycleScope.launch(Dispatchers.IO) { // Удаление файла - IO операция
+            try {
+                val oldUri = Uri.parse(oldUriString)
+                // Убеждаемся, что это file URI из нашего хранилища
+                if (oldUri.scheme == "file" && oldUri.path?.startsWith(filesDir.absolutePath) == true) {
+                    val oldFile = File(oldUri.path!!)
+                    if (oldFile.exists()) {
+                        if (oldFile.delete()) {
+                            Log.i("ProductsRedActivity", "Old image file deleted: ${oldFile.absolutePath}")
+                        } else {
+                            Log.w("ProductsRedActivity", "Failed to delete old image file: ${oldFile.absolutePath}")
+                        }
+                    } else {
+                        Log.w("ProductsRedActivity", "Old image file not found for deletion: ${oldFile.absolutePath}")
+                    }
+                } else {
+                    Log.w("ProductsRedActivity", "Skipping cleanup, URI is not an internal file URI: $oldUriString")
+                }
+            } catch (e: Exception) {
+                Log.e("ProductsRedActivity", "Error cleaning up old image: $oldUriString", e)
+            }
+        }
+    }
+
+} // Конец класса

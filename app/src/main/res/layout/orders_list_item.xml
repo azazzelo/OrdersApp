@@ -32,7 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
-                    android:text="@string/tv_quantity"
+                    android:text="order ID:"
                     android:textColor="@color/white" />
 
                 <TextView
@@ -55,7 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
-                    android:text="@string/tv_product_id"
+                    android:text="customer ID:"
                     android:textColor="@color/white" />
 
                 <TextView
@@ -78,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
-                    android:text="@string/tv_name"
+                    android:text="reg date:"
                     android:textColor="@color/white" />
 
                 <TextView
@@ -101,7 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
-                    android:text="@string/tv_cost"
+                    android:text="del date:"
                     android:textColor="@color/white" />
 
                 <TextView
@@ -124,7 +124,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
-                    android:text="@string/tv_quantity"
+                    android:text="final cost:"
                     android:textColor="@color/white" />
 
                 <TextView
