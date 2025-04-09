@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UsersRedActivity">
+    tools:context=".CustomersRedActivity"> <!-- Исправлен context -->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnSaveCustomer"
@@ -14,51 +14,70 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
-        android:contentDescription="btn"
-        android:tint="@color/white"
-        android:tintMode="src_in"
+        android:contentDescription="Save Customer"
+        app:tint="@color/white"
         app:backgroundTint="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_save" />
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="wrap_content"
+        android:id="@+id/linearLayoutInputFields"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:layout_marginEnd="1dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logoC"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnSaveCustomer"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintVertical_bias="0.3">
 
+        <!-- Имя -->
         <EditText
             android:id="@+id/edTextCustomerName"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginBottom="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
             android:ems="10"
-            android:hint="@string/hint_name"
-            android:inputType="text" />
+            android:hint="Name (Required)"
+            android:inputType="textPersonName|textCapWords" />
 
+        <!-- === ДОБАВЛЕНО: Адрес === -->
+        <EditText
+            android:id="@+id/edTextCustomerAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="Address (Optional)"
+            android:inputType="textPostalAddress" />
+        <!-- ====================== -->
+
+        <!-- Телефон -->
         <EditText
             android:id="@+id/edTextCustomerPhone"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginBottom="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginTop="8dp"
             android:ems="10"
-            android:hint="@string/hint_phone"
-            android:inputType="text" />
+            android:hint="Phone"
+            android:inputType="phone" />
 
+        <!-- Email -->
         <EditText
             android:id="@+id/exTextCustomerEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginTop="8dp"
             android:ems="10"
-            android:hint="@string/hint_email"
-            android:inputType="text" />
+            android:hint="Contact Email"
+            android:inputType="textEmailAddress" />
 
     </LinearLayout>
 
@@ -66,12 +85,16 @@
         android:id="@+id/logoC"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="32dp"
         android:fontFamily="@font/boston_heavy_it"
         android:text="@string/tv_create_edit"
         android:textColor="@color/red"
-        android:textSize="48sp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout3" />
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayoutInputFields"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

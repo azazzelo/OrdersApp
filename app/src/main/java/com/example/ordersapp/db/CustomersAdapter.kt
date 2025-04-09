@@ -1,6 +1,7 @@
 package com.example.ordersapp.db // Или ваш пакет для адаптеров
 
 import android.view.LayoutInflater
+import android.view.View // Импорт View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ordersapp.databinding.CustomersListItemBinding // Убедитесь, что путь верный
@@ -16,28 +17,30 @@ class CustomersAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(customer: CustomersEntity) {
-            // Привязываем данные к элементам ViewBinding
-            // Важно: В вашем customers_list_item.xml ID TextView для значений
-            // имеют суффикс Value (tvItemCustomerIdValue, tvItemCustomerNameValue и т.д.)
             binding.tvItemCustomerIdValue.text = customer.idCustomer.toString()
             binding.tvItemCustomerNameValue.text = customer.name
             binding.tvItemCustomerPhoneValue.text = customer.phone
             binding.tvItemCustomerEmailValue.text = customer.contactPersonEmail
 
-            // Показываем TextView со значениями (если они были невидимы по умолчанию)
-            binding.tvItemCustomerIdValue.visibility = android.view.View.VISIBLE
-            binding.tvItemCustomerNameValue.visibility = android.view.View.VISIBLE
-            binding.tvItemCustomerPhoneValue.visibility = android.view.View.VISIBLE
-            binding.tvItemCustomerEmailValue.visibility = android.view.View.VISIBLE
-
-
-            // Устанавливаем слушатели кликов
-            binding.root.setOnClickListener {
-                onItemClick(customer)
+            // --- ОТОБРАЖАЕМ АДРЕС ---
+            if (!customer.address.isNullOrEmpty()) {
+                binding.tvItemCustomerAddressValue.text = customer.address
+                binding.layoutCustomerAddress.visibility = View.VISIBLE // Показываем блок с адресом
+            } else {
+                binding.layoutCustomerAddress.visibility = View.GONE // Скрываем блок, если адреса нет
             }
+            // ----------------------
+
+            // Показываем остальные TextView со значениями
+            binding.tvItemCustomerIdValue.visibility = View.VISIBLE
+            binding.tvItemCustomerNameValue.visibility = View.VISIBLE
+            binding.tvItemCustomerPhoneValue.visibility = View.VISIBLE
+            binding.tvItemCustomerEmailValue.visibility = View.VISIBLE
+
+            binding.root.setOnClickListener { onItemClick(customer) }
             binding.root.setOnLongClickListener {
                 onItemDelete(customer)
-                true // Возвращаем true, чтобы показать, что событие обработано
+                true
             }
         }
     }
@@ -55,13 +58,10 @@ class CustomersAdapter(
         holder.bind(customers[position])
     }
 
-    override fun getItemCount(): Int {
-        return customers.size
-    }
+    override fun getItemCount(): Int = customers.size
 
-    // Метод для обновления списка данных
     fun submitList(newList: List<CustomersEntity>) {
         customers = newList
-        notifyDataSetChanged() // Уведомляем адаптер об изменениях
+        notifyDataSetChanged()
     }
 }

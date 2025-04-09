@@ -30,6 +30,7 @@ androidx-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-livedata-
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "viewModel"}
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

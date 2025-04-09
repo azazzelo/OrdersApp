@@ -6,7 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.ordersapp.databinding.ActivityCustomersRedBinding
+import com.example.ordersapp.databinding.ActivityCustomersRedBinding // Проверьте путь
 import com.example.ordersapp.db.AppDatabase
 import com.example.ordersapp.db.CustomersDao
 import com.example.ordersapp.db.CustomersEntity
@@ -17,7 +17,7 @@ class CustomersRedActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCustomersRedBinding
     private lateinit var customersDao: CustomersDao
-    private var currentCustomer: CustomersEntity? = null // Хранит данные редактируемого заказчика
+    private var currentCustomer: CustomersEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,20 +26,15 @@ class CustomersRedActivity : AppCompatActivity() {
 
         customersDao = AppDatabase.getDatabase(this).customersDao()
 
-        // Получаем ID заказчика из Intent
         val customerId = intent.getIntExtra("customer_id", -1)
 
         if (customerId != -1) {
-            // Если ID есть, загружаем данные для редактирования
             Log.d("CustomersRedActivity", "Editing customer with ID: $customerId")
             loadCustomerData(customerId)
         } else {
             Log.d("CustomersRedActivity", "Adding new customer.")
-            // Иначе это добавление нового заказчика
-            // Поля остаются пустыми
         }
 
-        // Устанавливаем слушатель на кнопку сохранения
         binding.btnSaveCustomer.setOnClickListener {
             saveCustomer()
         }
@@ -50,87 +45,81 @@ class CustomersRedActivity : AppCompatActivity() {
             try {
                 currentCustomer = customersDao.getCustomerById(customerId)
                 currentCustomer?.let { customer ->
-                    // Заполняем поля данными
                     binding.edTextCustomerName.setText(customer.name)
+                    binding.edTextCustomerAddress.setText(customer.address ?: "") // Загружаем адрес
                     binding.edTextCustomerPhone.setText(customer.phone)
                     binding.exTextCustomerEmail.setText(customer.contactPersonEmail)
                     Log.i("CustomersRedActivity", "Customer data loaded for ID: $customerId")
                 } ?: run {
                     Log.w("CustomersRedActivity", "Customer with ID $customerId not found in DB.")
-                    Toast.makeText(this@CustomersRedActivity, "Заказчик не найден", Toast.LENGTH_SHORT).show()
-                    finish() // Закрываем, если не нашли
+                    Toast.makeText(this@CustomersRedActivity, "Customer not found", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             } catch (e: Exception) {
                 Log.e("CustomersRedActivity", "Error loading customer $customerId", e)
-                Toast.makeText(this@CustomersRedActivity, "Ошибка загрузки данных заказчика", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CustomersRedActivity, "Error loading customer data", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
     }
 
     private fun saveCustomer() {
-        // Считываем данные из полей
         val name = binding.edTextCustomerName.text.toString().trim()
+        // Считываем адрес, если пустой - будет null
+        val address = binding.edTextCustomerAddress.text.toString().trim().let { if (it.isEmpty()) null else it }
         val phone = binding.edTextCustomerPhone.text.toString().trim()
         val email = binding.exTextCustomerEmail.text.toString().trim()
 
-        // --- Валидация ---
         if (name.isEmpty()) {
-            binding.edTextCustomerName.error = "Имя не может быть пустым"
-            return // Прерываем сохранение
+            binding.edTextCustomerName.error = "Name cannot be empty"
+            return
         }
-        // Можно добавить другие валидации (например, формат email, телефона)
-        // if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() && email.isNotEmpty()) {
-        //    binding.exTextCustomerEmail.error = "Некорректный формат email"
-        //    return
-        // }
 
-        // Создаем или обновляем объект CustomersEntity
         val customerToSave: CustomersEntity
         if (currentCustomer == null) {
-            // Создание нового
+            // --- ИСПРАВЛЕНО: Добавлен параметр address ---
             Log.d("CustomersRedActivity", "Creating new customer object.")
             customerToSave = CustomersEntity(
-                idCustomer = 0, // ID будет сгенерирован базой данных
+                idCustomer = 0,
                 name = name,
+                address = address, // Передаем адрес
                 phone = phone,
                 contactPersonEmail = email
             )
+            // --------------------------------------------
         } else {
-            // Обновление существующего
+            // --- ИСПРАВЛЕНО: Добавлен параметр address в copy() ---
             Log.d("CustomersRedActivity", "Updating existing customer object with ID: ${currentCustomer!!.idCustomer}")
             customerToSave = currentCustomer!!.copy(
                 name = name,
+                address = address, // Передаем адрес
                 phone = phone,
                 contactPersonEmail = email
             )
+            // ----------------------------------------------------
         }
 
-        // Сохраняем в базе данных в корутине
         lifecycleScope.launch {
             try {
                 if (currentCustomer == null) {
-                    // Вставляем нового
                     val newId = customersDao.insert(customerToSave)
                     Log.i("CustomersRedActivity", "New customer inserted with ID: $newId")
-                    Toast.makeText(this@CustomersRedActivity, "Заказчик добавлен", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@CustomersRedActivity, "Customer added", Toast.LENGTH_SHORT).show()
                 } else {
-                    // Обновляем существующего
                     val updatedRows = customersDao.update(customerToSave)
                     if (updatedRows > 0) {
                         Log.i("CustomersRedActivity", "Customer ${customerToSave.idCustomer} updated successfully.")
-                        Toast.makeText(this@CustomersRedActivity, "Данные обновлены", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@CustomersRedActivity, "Customer data updated", Toast.LENGTH_SHORT).show()
                     } else {
                         Log.w("CustomersRedActivity", "Customer ${customerToSave.idCustomer} not found for update or update failed.")
-                        Toast.makeText(this@CustomersRedActivity, "Не удалось обновить данные", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@CustomersRedActivity, "Failed to update data", Toast.LENGTH_SHORT).show()
                     }
                 }
-                // Устанавливаем результат OK, чтобы CustomersEntityActivity обновил список
                 setResult(Activity.RESULT_OK)
-                finish() // Закрываем активность после сохранения
+                finish()
             } catch (e: Exception) {
                 Log.e("CustomersRedActivity", "Error saving customer data", e)
-                Toast.makeText(this@CustomersRedActivity, "Ошибка сохранения данных", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CustomersRedActivity, "Error saving data", Toast.LENGTH_SHORT).show()
             }
         }
     }

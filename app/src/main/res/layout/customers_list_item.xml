@@ -6,38 +6,29 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="4dp"
+    android:layout_marginHorizontal="8dp"
     app:cardBackgroundColor="@color/red"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp"> <!-- Добавлен внутренний отступ -->
-
-        <LinearLayout
-            android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:padding="12dp">
 
-        <!-- ID Заказчика -->
+        <!-- ID -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
             android:orientation="horizontal">
             <TextView
-                android:id="@+id/tvItemCustomerId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:text="Customer ID:"
+                android:text="Customer ID: "
                 android:textColor="@color/white"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"/>
             <TextView
                 android:id="@+id/tvItemCustomerIdValue"
                 android:layout_width="wrap_content"
@@ -46,73 +37,92 @@
                 tools:text="1"/>
         </LinearLayout>
 
-        <!-- Имя Заказчика -->
+        <!-- Имя -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
             <TextView
-                android:id="@+id/tvItemCustomerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:text="@string/tv_name"
+                android:text="Name: "
                 android:textColor="@color/white"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"/>
             <TextView
                 android:id="@+id/tvItemCustomerNameValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textSize="16sp"
-                tools:text="ООО Ромашка"/>
+                tools:text="Customer Name Ltd."/>
         </LinearLayout>
+
+        <!-- === ДОБАВЛЕНО: Адрес === -->
+        <LinearLayout
+            android:id="@+id/layoutCustomerAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Address: "
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"/>
+            <TextView
+                android:id="@+id/tvItemCustomerAddressValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                tools:text="123 Main St, Anytown"/>
+        </LinearLayout>
+        <!-- ======================= -->
 
         <!-- Телефон -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
             <TextView
-                android:id="@+id/tvItemCustomerPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:text="Phone:"
-            android:textColor="@color/white"
-            android:textStyle="bold"/>
+                android:text="Phone: "
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"/>
             <TextView
                 android:id="@+id/tvItemCustomerPhoneValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                tools:text="+7 (999) 123-45-67"/>
+                tools:text="+1-555-1234"/>
         </LinearLayout>
 
         <!-- Email -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
             <TextView
-                android:id="@+id/tvItemCustomerEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:text="Email:"
-            android:textColor="@color/white"
-            android:textStyle="bold"/>
+                android:text="Email: "
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"/>
             <TextView
                 android:id="@+id/tvItemCustomerEmailValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                tools:text="contact@romashka.ru"/>
+                tools:text="contact@customer.com"/>
         </LinearLayout>
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.cardview.widget.CardView>
+</androidx.cardview.widget.CardView>

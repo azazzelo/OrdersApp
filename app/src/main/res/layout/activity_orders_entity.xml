@@ -8,22 +8,68 @@
     android:layout_height="match_parent"
     tools:context=".OrdersEntityActivity">
 
+    <!-- Поиск -->
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchViewOrders"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:iconifiedByDefault="false"
+        app:queryHint="Search by Order ID or Customer ID..."
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnSortOrdersDesc"/> <!-- Ограничен кнопкой сортировки -->
+
+    <!-- Кнопка сортировки (Новые сверху) -->
+    <ImageButton
+        android:id="@+id/btnSortOrdersDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@android:drawable/ic_menu_sort_alphabetically"
+        android:contentDescription="Sort Newest First"
+        app:tint="?attr/colorControlNormal"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintTop_toTopOf="@id/searchViewOrders"
+        app:layout_constraintBottom_toBottomOf="@id/searchViewOrders"
+        app:layout_constraintEnd_toStartOf="@id/btnSortOrdersAsc"
+        style="@android:style/Widget.Material.Button.Borderless"/>
+
+    <!-- Кнопка сортировки (Старые сверху) -->
+    <ImageButton
+        android:id="@+id/btnSortOrdersAsc"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@android:drawable/ic_menu_sort_alphabetically"
+        android:rotation="180"
+        android:contentDescription="Sort Oldest First"
+        app:tint="?attr/colorControlNormal"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintTop_toTopOf="@id/searchViewOrders"
+        app:layout_constraintBottom_toBottomOf="@id/searchViewOrders"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@android:style/Widget.Material.Button.Borderless"/>
+
+
+    <!-- Список заказов -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcOrders"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="Список заказов"
+        android:contentDescription="List of Orders"
         android:paddingHorizontal="8dp"
         android:paddingTop="4dp"
         android:paddingBottom="80dp"
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchViewOrders"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/orders_list_item" />
 
+    <!-- Кнопка добавления (остается) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnAddOrder"
         android:layout_width="wrap_content"
@@ -31,7 +77,7 @@
         android:layout_margin="16dp"
         android:clickable="true"
         android:focusable="true"
-        android:contentDescription="Добавить заказ"
+        android:contentDescription="Add Order"
         app:srcCompat="@android:drawable/ic_menu_add"
         app:backgroundTint="@color/red"
         app:tint="@color/white"
